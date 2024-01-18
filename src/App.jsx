@@ -2,13 +2,15 @@ import { useState, useEffect } from "react";
 import Blogs from "./components/Blogs";
 import LoginForm from "./components/LoginForm";
 import blogService from "./services/blogs";
-import ErrorMessage from "./components/ErrorMessage";
 
 const App = () => {
   const [blogs, setBlogs] = useState([]);
+
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [notification, setNotification] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
@@ -27,9 +29,14 @@ const App = () => {
 
   return (
     <div>
-      {errorMessage ? <ErrorMessage /> : null}
       {user ? (
-        <Blogs user={user} blogs={blogs} setBlogs={setBlogs} />
+        <Blogs
+          user={user}
+          blogs={blogs}
+          setBlogs={setBlogs}
+          notification={notification}
+          setNotification={setNotification}
+        />
       ) : (
         <LoginForm
           setUser={setUser}
@@ -37,6 +44,7 @@ const App = () => {
           password={password}
           setUsername={setUsername}
           setPassword={setPassword}
+          errorMessage={errorMessage}
           setErrorMessage={setErrorMessage}
         />
       )}

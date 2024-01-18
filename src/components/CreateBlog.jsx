@@ -1,6 +1,6 @@
 import blogService from "../services/blogs";
 
-const CreateBlog = ({ blogs, setBlogs }) => {
+const CreateBlog = ({ blogs, setBlogs, notification, setNotification }) => {
   const handleCreateBlog = (event) => {
     event.preventDefault();
 
@@ -12,10 +12,21 @@ const CreateBlog = ({ blogs, setBlogs }) => {
     };
     console.log("blog", blog);
 
-    blogService.create(blog).then((createdBlog) => {
-      console.log("createdBlog", createdBlog);
-      setBlogs(blogs.concat(createdBlog));
-    });
+    try {
+      blogService.create(blog).then((createdBlog) => {
+        console.log("createdBlog", createdBlog);
+        setBlogs(blogs.concat(createdBlog));
+        console.log("blog created successfully");
+        setNotification(
+          `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
+        );
+        setTimeout(() => {
+          setNotification(null);
+        }, 5000);
+      });
+    } catch (exception) {
+      console.log("exception", exception);
+    }
 
     event.target.Title.value = "";
     event.target.Author.value = "";
@@ -38,6 +49,7 @@ const CreateBlog = ({ blogs, setBlogs }) => {
             name="Title"
             autoComplete="on"
             onChange={({ target }) => (title = target.value)}
+            required
           />
         </div>
         <div>
@@ -48,6 +60,7 @@ const CreateBlog = ({ blogs, setBlogs }) => {
             name="Author"
             autoComplete="on"
             onChange={({ target }) => (author = target.value)}
+            required
           />
         </div>
         <div>
@@ -58,6 +71,7 @@ const CreateBlog = ({ blogs, setBlogs }) => {
             name="URL"
             autoComplete="on"
             onChange={({ target }) => (url = target.value)}
+            required
           />
         </div>
         <button type="submit">create</button>

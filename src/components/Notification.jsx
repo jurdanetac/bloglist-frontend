@@ -1,6 +1,6 @@
-const ErrorMessage = ({ message }) => {
+const Notification = ({ message }) => {
   const style = {
-    color: "red",
+    color: "green",
     background: "lightgrey",
     fontSize: "20px",
     borderStyle: "solid",
@@ -12,4 +12,4 @@ const ErrorMessage = ({ message }) => {
   return <h2 style={style}>{message}</h2>;
 };
 
-export default ErrorMessage;
+export default Notification;
