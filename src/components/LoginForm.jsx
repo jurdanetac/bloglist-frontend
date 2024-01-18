@@ -1,4 +1,5 @@
 import loginService from "../services/login";
+import blogService from "../services/blogs";
 
 const LoginForm = (props) => {
   const {
@@ -20,9 +21,12 @@ const LoginForm = (props) => {
         password,
       });
 
+      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
+      blogService.setToken(user.token);
       setUser(user);
       setUsername("");
       setPassword("");
+      console.log(`logged in successfully as ${user.username}`);
     } catch (exception) {
       setErrorMessage("Wrong credentials");
       setTimeout(() => {
