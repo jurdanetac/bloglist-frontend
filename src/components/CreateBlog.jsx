@@ -1,6 +1,6 @@
 import blogService from "../services/blogs";
 
-const CreateBlog = ({ blogs, setBlogs, notification, setNotification }) => {
+const CreateBlog = ({ blogs, setBlogs, setNotification, createBlogRef }) => {
   const handleCreateBlog = (event) => {
     event.preventDefault();
 
@@ -11,6 +11,8 @@ const CreateBlog = ({ blogs, setBlogs, notification, setNotification }) => {
       url: event.target.URL.value,
     };
     console.log("blog", blog);
+
+    createBlogRef.current.toggleVisibility();
 
     try {
       blogService.create(blog).then((createdBlog) => {

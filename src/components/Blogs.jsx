@@ -1,6 +1,8 @@
+import { createRef } from "react";
 import Blog from "./Blog";
 import CreateBlog from "./CreateBlog";
 import Notification from "./Notification";
+import Togglable from "./Togglable";
 
 const Blogs = ({ user, blogs, setBlogs, notification, setNotification }) => {
   const handleLogout = () => {
@@ -8,6 +10,7 @@ const Blogs = ({ user, blogs, setBlogs, notification, setNotification }) => {
     window.location.reload();
     console.log("logged out successfully");
   };
+  const createBlogRef = createRef();
 
   return (
     <div>
@@ -18,12 +21,15 @@ const Blogs = ({ user, blogs, setBlogs, notification, setNotification }) => {
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
       ) : null}
-      <CreateBlog
-        blogs={blogs}
-        setBlogs={setBlogs}
-        notification={notification}
-        setNotification={setNotification}
-      />
+      <Togglable buttonLabel="new blog" ref={createBlogRef}>
+        <CreateBlog
+          blogs={blogs}
+          setBlogs={setBlogs}
+          notification={notification}
+          setNotification={setNotification}
+          createBlogRef={createBlogRef}
+        />
+      </Togglable>
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
