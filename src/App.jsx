@@ -29,7 +29,7 @@ const App = () => {
     <div>
       {errorMessage ? <ErrorMessage /> : null}
       {user ? (
-        <Blogs user={user} blogs={blogs} />
+        <Blogs user={user} blogs={blogs} setBlogs={setBlogs} />
       ) : (
         <LoginForm
           setUser={setUser}

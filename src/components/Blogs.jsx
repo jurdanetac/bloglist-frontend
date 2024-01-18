@@ -1,6 +1,7 @@
 import Blog from "./Blog";
+import CreateBlog from "./CreateBlog";
 
-const Blogs = ({ blogs, user }) => {
+const Blogs = ({ user, blogs, setBlogs }) => {
   const handleLogout = () => {
     window.localStorage.removeItem("loggedBlogAppUser");
     window.location.reload();
@@ -15,6 +16,7 @@ const Blogs = ({ blogs, user }) => {
           {user.name} logged in <button onClick={handleLogout}>logout</button>
         </p>
       ) : null}
+      <CreateBlog blogs={blogs} setBlogs={setBlogs} />
       {blogs.map((blog) => (
         <Blog key={blog.id} blog={blog} />
       ))}
