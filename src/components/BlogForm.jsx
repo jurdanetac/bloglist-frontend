@@ -1,7 +1,7 @@
 import blogService from "../services/blogs";
 
-const CreateBlog = ({ blogs, setBlogs, setNotification, createBlogRef }) => {
-  const handleCreateBlog = (event) => {
+const BlogForm = ({ blogs, setBlogs, setNotification, createBlogRef }) => {
+  const handleBlogForm = (event) => {
     event.preventDefault();
 
     console.log("creating new blog");
@@ -42,7 +42,7 @@ const CreateBlog = ({ blogs, setBlogs, setNotification, createBlogRef }) => {
   return (
     <div>
       <h2>create new</h2>
-      <form onSubmit={handleCreateBlog}>
+      <form onSubmit={handleBlogForm}>
         <div>
           title:{" "}
           <input
@@ -82,4 +82,4 @@ const CreateBlog = ({ blogs, setBlogs, setNotification, createBlogRef }) => {
   );
 };
 
-export default CreateBlog;
+export default BlogForm;

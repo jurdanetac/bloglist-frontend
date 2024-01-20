@@ -1,6 +1,6 @@
 import { createRef } from "react";
 import Blog from "./Blog";
-import CreateBlog from "./CreateBlog";
+import BlogForm from "./BlogForm";
 import Notification from "./Notification";
 import Togglable from "./Togglable";
 
@@ -22,7 +22,7 @@ const Blogs = ({ user, blogs, setBlogs, notification, setNotification }) => {
         </p>
       ) : null}
       <Togglable buttonLabel="new blog" ref={createBlogRef}>
-        <CreateBlog
+        <BlogForm
           blogs={blogs}
           setBlogs={setBlogs}
           notification={notification}
