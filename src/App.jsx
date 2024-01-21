@@ -18,15 +18,11 @@ const App = () => {
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
 
-  // blog form fields
-  const [title, setTitle] = useState("");
-  const [author, setAuthor] = useState("");
-  const [url, setUrl] = useState("");
-
   // notifications
   const [notification, setNotification] = useState(null);
   const [errorMessage, setErrorMessage] = useState(null);
 
+  // creates a reference to the blog form
   const blogFormRef = useRef();
 
   // fetches blogs from server
@@ -97,24 +93,18 @@ const App = () => {
   );
 
   // handles adding a blog
-  const addBlog = (event) => {
-    event.preventDefault();
-
-    console.log("creating new blog");
-    const blog = {
-      title: event.target.Title.value,
-      author: event.target.Author.value,
-      url: event.target.URL.value,
-    };
-    console.log("blog", blog);
-
+  const addBlog = (blog) => {
+    // hide form
     blogFormRef.current.toggleVisibility();
 
+    // logic for blog creation
     try {
       blogService.create(blog).then((createdBlog) => {
-        console.log("createdBlog", createdBlog);
+        console.log("created blog:", createdBlog);
         setBlogs(blogs.concat(createdBlog));
         console.log("blog created successfully");
+
+        // show success to user
         setNotification(
           `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
         );
@@ -125,13 +115,9 @@ const App = () => {
     } catch (exception) {
       console.log("exception", exception);
     }
-
-    setTitle("");
-    setAuthor("");
-    setUrl("");
   };
 
-  // generates a form to add a blog for the user
+  // generates a form page to add a blog for the user
   const blogForm = () => (
     <div>
       <h2>blogs</h2>
@@ -146,16 +132,7 @@ const App = () => {
 
       <Togglable buttonLabel="new blog" ref={blogFormRef}>
         <h2>create new</h2>
-
-        <BlogForm
-          addBlog={addBlog}
-          title={title}
-          setTitle={setTitle}
-          author={author}
-          setAuthor={setAuthor}
-          url={url}
-          setUrl={setUrl}
-        />
+        <BlogForm createBlog={addBlog} />
       </Togglable>
 
       {blogs.map((blog) => (
@@ -164,11 +141,7 @@ const App = () => {
     </div>
   );
 
-  return (
-    <>
-      {user === null ? loginForm() : blogForm()}
-    </>
-  );
+  return <>{user === null ? loginForm() : blogForm()}</>;
 };
 
 export default App;
