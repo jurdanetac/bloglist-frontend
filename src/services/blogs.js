@@ -32,4 +32,14 @@ const update = async (id, updatedObject) => {
   return response;
 };
 
-export default { getAll, setToken, create, update };
+const remove = async (id) => {
+  const config = {
+    headers: { Authorization: token },
+  };
+
+  const response = await axios.delete(`${baseUrl}/${id}`, config);
+
+  return response;
+};
+
+export default { getAll, setToken, create, update, remove };

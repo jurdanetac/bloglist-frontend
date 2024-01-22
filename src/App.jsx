@@ -90,25 +90,51 @@ const App = () => {
     console.log("updatedBlog", updatedBlog);
 
     try {
-      blogService
-        .update(blog.id, updatedBlog)
-        .then(() => {
-          console.log("blog updated successfully");
+      blogService.update(blog.id, updatedBlog).then(() => {
+        console.log("blog updated successfully");
 
-          // set the id to the updated blog
-          updatedBlog.id = blog.id;
-          // repopulate the user field
-          updatedBlog.user = blog.user;
+        // set the id to the updated blog
+        updatedBlog.id = blog.id;
+        // repopulate the user field
+        updatedBlog.user = blog.user;
 
-          // update the blogs state preserving the order
-          const updatedBlogs = [...blogs];
-          updatedBlogs[blogs.indexOf(blog)].likes += 1;
-          setBlogs(updatedBlogs);
+        // update the blogs state preserving the order
+        const updatedBlogs = [...blogs];
+        updatedBlogs[blogs.indexOf(blog)].likes += 1;
+        setBlogs(updatedBlogs);
       });
     } catch (exception) {
       console.log("exception", exception);
     }
-  }
+  };
+
+  const handleDelete = (blog) => {
+    console.log("blog", blog);
+
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
+      blogService
+        .remove(blog.id)
+        .then(() => {
+          console.log("blog deleted successfully");
+
+          // update the blogs state preserving the order
+          const updatedBlogs = [...blogs];
+          updatedBlogs.splice(blogs.indexOf(blog), 1);
+          setBlogs(updatedBlogs);
+
+          // show success to user
+          setNotification(`blog ${blog.title} by ${blog.author} deleted`);
+          setTimeout(() => {
+            setNotification(null);
+          }, 5000);
+        })
+        .catch((error) => {
+          console.log("error", error);
+        });
+    } else {
+      console.log("blog deletion aborted");
+    }
+  };
 
   // generates a login form for the user
   const loginForm = () => (
@@ -165,14 +191,22 @@ const App = () => {
         </p>
       ) : null}
 
-      <Togglable buttonLabel="new blog" ref={blogFormRef}>
+      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
         <h2>create new</h2>
         <BlogForm createBlog={addBlog} />
       </Togglable>
 
-      {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
-      )).sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
+      {blogs
+        .map((blog) => (
+          <Blog
+            key={blog.id}
+            blog={blog}
+            handleLike={handleLike}
+            handleDelete={handleDelete}
+            user={user}
+          />
+        ))
+        .sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
     </div>
   );
 
