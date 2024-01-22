@@ -75,6 +75,41 @@ const App = () => {
     console.log("logged out successfully");
   };
 
+  // increases the likes of a blog by one
+  const handleLike = (blog) => {
+    console.log("blog", blog);
+
+    const updatedBlog = {
+      author: blog.author,
+      likes: blog.likes + 1,
+      title: blog.title,
+      url: blog.url,
+      user: blog.user.id,
+    };
+
+    console.log("updatedBlog", updatedBlog);
+
+    try {
+      blogService
+        .update(blog.id, updatedBlog)
+        .then(() => {
+          console.log("blog updated successfully");
+
+          // set the id to the updated blog
+          updatedBlog.id = blog.id;
+          // repopulate the user field
+          updatedBlog.user = blog.user;
+
+          // update the blogs state preserving the order
+          const updatedBlogs = [...blogs];
+          updatedBlogs[blogs.indexOf(blog)].likes += 1;
+          setBlogs(updatedBlogs);
+      });
+    } catch (exception) {
+      console.log("exception", exception);
+    }
+  }
+
   // generates a login form for the user
   const loginForm = () => (
     <div>
@@ -136,7 +171,7 @@ const App = () => {
       </Togglable>
 
       {blogs.map((blog) => (
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} handleLike={handleLike} />
       ))}
     </div>
   );
