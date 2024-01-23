@@ -1,83 +1,83 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from 'react'
 
-import blogService from "./services/blogs";
-import loginService from "./services/login";
+import blogService from './services/blogs'
+import loginService from './services/login'
 
-import LoginForm from "./components/LoginForm";
-import BlogForm from "./components/BlogForm";
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
 
-import Togglable from "./components/Togglable";
-import Blog from "./components/Blog";
+import Togglable from './components/Togglable'
+import Blog from './components/Blog'
 
-import Notification from "./components/Notification";
+import Notification from './components/Notification'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState([])
 
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
 
   // notifications
-  const [notification, setNotification] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
+  const [notification, setNotification] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
   // creates a reference to the blog form
-  const blogFormRef = useRef();
+  const blogFormRef = useRef()
 
   // fetches blogs from server
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+    blogService.getAll().then((blogs) => setBlogs(blogs))
+  }, [])
 
   // checks if user is logged in
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogAppUser");
+    const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
 
     if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      blogService.setToken(user.token);
+      const user = JSON.parse(loggedUserJSON)
+      setUser(user)
+      blogService.setToken(user.token)
     }
-  }, []);
+  }, [])
 
   // performs login and saves session to browser
   const handleLogin = async (event) => {
-    event.preventDefault();
-    console.log("logging in with", username, password);
+    event.preventDefault()
+    console.log('logging in with', username, password)
 
     try {
       const user = await loginService.login({
         username,
         password,
-      });
+      })
 
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      blogService.setToken(user.token);
+      window.localStorage.setItem('loggedBlogAppUser', JSON.stringify(user))
+      blogService.setToken(user.token)
 
-      setUser(user);
-      setUsername("");
-      setPassword("");
+      setUser(user)
+      setUsername('')
+      setPassword('')
 
-      console.log(`logged in successfully as ${user.username}`);
+      console.log(`logged in successfully as ${user.username}`)
     } catch (exception) {
-      setErrorMessage("Wrong username or password");
+      setErrorMessage('Wrong username or password')
       setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
+        setErrorMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   // performs logout and removes session from browser
   const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    window.location.reload();
-    console.log("logged out successfully");
-  };
+    window.localStorage.removeItem('loggedBlogAppUser')
+    window.location.reload()
+    console.log('logged out successfully')
+  }
 
   // increases the likes of a blog by one
   const handleLike = (blog) => {
-    console.log("blog", blog);
+    console.log('blog', blog)
 
     const updatedBlog = {
       author: blog.author,
@@ -85,56 +85,56 @@ const App = () => {
       title: blog.title,
       url: blog.url,
       user: blog.user.id,
-    };
+    }
 
-    console.log("updatedBlog", updatedBlog);
+    console.log('updatedBlog', updatedBlog)
 
     try {
       blogService.update(blog.id, updatedBlog).then(() => {
-        console.log("blog updated successfully");
+        console.log('blog updated successfully')
 
         // set the id to the updated blog
-        updatedBlog.id = blog.id;
+        updatedBlog.id = blog.id
         // repopulate the user field
-        updatedBlog.user = blog.user;
+        updatedBlog.user = blog.user
 
         // update the blogs state preserving the order
-        const updatedBlogs = [...blogs];
-        updatedBlogs[blogs.indexOf(blog)].likes += 1;
-        setBlogs(updatedBlogs);
-      });
+        const updatedBlogs = [...blogs]
+        updatedBlogs[blogs.indexOf(blog)].likes += 1
+        setBlogs(updatedBlogs)
+      })
     } catch (exception) {
-      console.log("exception", exception);
+      console.log('exception', exception)
     }
-  };
+  }
 
   const handleDelete = (blog) => {
-    console.log("blog", blog);
+    console.log('blog', blog)
 
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}`)) {
       blogService
         .remove(blog.id)
         .then(() => {
-          console.log("blog deleted successfully");
+          console.log('blog deleted successfully')
 
           // update the blogs state preserving the order
-          const updatedBlogs = [...blogs];
-          updatedBlogs.splice(blogs.indexOf(blog), 1);
-          setBlogs(updatedBlogs);
+          const updatedBlogs = [...blogs]
+          updatedBlogs.splice(blogs.indexOf(blog), 1)
+          setBlogs(updatedBlogs)
 
           // show success to user
-          setNotification(`blog ${blog.title} by ${blog.author} deleted`);
+          setNotification(`blog ${blog.title} by ${blog.author} deleted`)
           setTimeout(() => {
-            setNotification(null);
-          }, 5000);
+            setNotification(null)
+          }, 5000)
         })
         .catch((error) => {
-          console.log("error", error);
-        });
+          console.log('error', error)
+        })
     } else {
-      console.log("blog deletion aborted");
+      console.log('blog deletion aborted')
     }
-  };
+  }
 
   // generates a login form for the user
   const loginForm = () => (
@@ -151,32 +151,32 @@ const App = () => {
         handleLogin={handleLogin}
       />
     </div>
-  );
+  )
 
   // handles adding a blog
   const addBlog = (blog) => {
     // hide form
-    blogFormRef.current.toggleVisibility();
+    blogFormRef.current.toggleVisibility()
 
     // logic for blog creation
     try {
       blogService.create(blog).then((createdBlog) => {
-        console.log("created blog:", createdBlog);
-        setBlogs(blogs.concat(createdBlog));
-        console.log("blog created successfully");
+        console.log('created blog:', createdBlog)
+        setBlogs(blogs.concat(createdBlog))
+        console.log('blog created successfully')
 
         // show success to user
         setNotification(
           `a new blog ${createdBlog.title} by ${createdBlog.author} added`,
-        );
+        )
         setTimeout(() => {
-          setNotification(null);
-        }, 5000);
-      });
+          setNotification(null)
+        }, 5000)
+      })
     } catch (exception) {
-      console.log("exception", exception);
+      console.log('exception', exception)
     }
-  };
+  }
 
   // generates a form page to add a blog for the user
   const blogForm = () => (
@@ -208,9 +208,9 @@ const App = () => {
         ))
         .sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
     </div>
-  );
+  )
 
-  return <>{user === null ? loginForm() : blogForm()}</>;
-};
+  return <>{user === null ? loginForm() : blogForm()}</>
+}
 
-export default App;
+export default App
