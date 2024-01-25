@@ -63,3 +63,27 @@ test('renders correct content after toggling', async () => {
   expect(togglableDiv).toHaveTextContent(blog.url)
   expect(togglableDiv).toHaveTextContent(blog.likes)
 })
+
+test('clicking the like button twice calls event handler twice', async () => {
+  const mockLike = jest.fn()
+
+  const { container } = render(
+    <Blog
+      blog={blog}
+      handleLike={mockLike}
+      handleDelete={() => {}}
+      user={user} />
+  )
+
+  // expand the blog
+  const testUser = userEvent.setup()
+  const button = screen.getByText('view')
+  await testUser.click(button)
+
+  // locate and press twice the like button
+  const likeButton = screen.getByText('like')
+  await testUser.click(likeButton)
+  await testUser.click(likeButton)
+
+  expect(mockLike.mock.calls).toHaveLength(2)
+})
