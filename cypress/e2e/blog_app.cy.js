@@ -1,16 +1,59 @@
+const user = {
+  name: 'Cypress',
+  username: 'cypress',
+  password: 'cypress'
+}
+
 describe('Blog app', function() {
+  // initialize settings
   beforeEach(function() {
+    // reset the database
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    cy.visit('http://localhost:5173')
+
+    // create here a user to backend
+    cy.request('POST', 'http://localhost:3003/api/users', user)
+
+    // visit the page
+    cy.visit('')
   })
 
-  it('Login form is shown', function() {
-    // check that the login page contains the heading
-    cy.contains('log in to application')
+  // test login processes
+  describe('Login',function() {
+    it('Login form is shown', function() {
+      // check that the login page contains the heading
+      cy.contains('log in to application')
 
-    // check that the login form contains the correct elements
-    cy.get('#username')
-    cy.get('#password')
-    cy.get('#login-button')
+      // check that the login form contains the correct elements
+      cy.get('#username')
+      cy.get('#password')
+      cy.get('#login-button')
+    })
+
+    it('succeeds with correct credentials', function() {
+      // login with the created user
+      cy.request('POST', 'http://localhost:3003/api/login', user)
+        .then(response => {
+          // save the token to local storage
+          localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
+        })
+
+      // fill the form with correct credentials
+      cy.get('#username').type(user.username)
+      cy.get('#password').type(user.password)
+      cy.get('#login-button').click()
+
+      // assert that the page contains the correct name
+      cy.contains(`${user.name} logged in`)
+    })
+
+    it('fails with wrong credentials', function() {
+      // fill the form with wrong credentials
+      cy.get('#username').type('wrong')
+      cy.get('#password').type('wrong')
+      cy.get('#login-button').click()
+
+      // assert that the page contains the error message
+      cy.contains('Wrong username or password')
+    })
   })
 })
