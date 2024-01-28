@@ -17,18 +17,18 @@ describe('Blog app', function() {
     cy.visit('')
   })
 
+  it('Login form is shown', function() {
+    // check that the login page contains the heading
+    cy.contains('log in to application')
+
+    // check that the login form contains the correct elements
+    cy.get('#username')
+    cy.get('#password')
+    cy.get('#login-button')
+  })
+
   // test login processes
   describe('Login',function() {
-    it('Login form is shown', function() {
-      // check that the login page contains the heading
-      cy.contains('log in to application')
-
-      // check that the login form contains the correct elements
-      cy.get('#username')
-      cy.get('#password')
-      cy.get('#login-button')
-    })
-
     it('succeeds with correct credentials', function() {
       // login with the created user
       cy.request('POST', 'http://localhost:3003/api/login', user)
@@ -52,8 +52,10 @@ describe('Blog app', function() {
       cy.get('#password').type('wrong')
       cy.get('#login-button').click()
 
-      // assert that the page contains the error message
-      cy.contains('Wrong username or password')
+      // assert that the page contains the error message correctly formatted
+      cy.get('.error').should('contain', 'Wrong username or password')
+      cy.get('.error').should('have.css', 'color', 'rgb(255, 0, 0)')
+      cy.get('.error').should('have.css', 'border-style', 'solid')
     })
   })
 })

@@ -10,7 +10,7 @@ const Notification = ({ message, type }) => {
     marginBottom: '10px',
   }
 
-  return <h2 style={style}>{message}</h2>
+  return <h2 style={style} className={type} >{message}</h2>
 }
 
 export default Notification
