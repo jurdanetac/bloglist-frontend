@@ -31,16 +31,7 @@ describe('Blog app', function() {
   describe('Login',function() {
     it('succeeds with correct credentials', function() {
       // login with the created user
-      cy.request('POST', 'http://localhost:3003/api/login', user)
-        .then(response => {
-          // save the token to local storage
-          localStorage.setItem('loggedBlogappUser', JSON.stringify(response.body))
-        })
-
-      // fill the form with correct credentials
-      cy.get('#username').type(user.username)
-      cy.get('#password').type(user.password)
-      cy.get('#login-button').click()
+      cy.login({ username: user.username, password: user.password })
 
       // assert that the page contains the correct name
       cy.contains(`${user.name} logged in`)
