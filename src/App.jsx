@@ -183,7 +183,7 @@ const App = () => {
     <div>
       <h2>blogs</h2>
 
-      <Notification message={notification} />
+      <Notification message={notification} type="notification" />
 
       {user.name ? (
         <p>
@@ -191,22 +191,26 @@ const App = () => {
         </p>
       ) : null}
 
-      <Togglable buttonLabel="create new blog" ref={blogFormRef}>
+      <Togglable btnId="add-blog-button" buttonLabel="create new blog" ref={blogFormRef}>
         <h2>create new</h2>
         <BlogForm createBlog={addBlog} />
       </Togglable>
 
-      {blogs
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            handleLike={handleLike}
-            handleDelete={handleDelete}
-            user={user}
-          />
-        ))
-        .sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
+      <div className="blogs">
+        {blogs
+          .map((blog) => (
+            <div className="blog" key={blog.id}>
+              <Blog
+                key={blog.id}
+                blog={blog}
+                handleLike={handleLike}
+                handleDelete={handleDelete}
+                user={user}
+              />
+            </div>
+          ))
+          .sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
+      </div>
     </div>
   )
 

@@ -49,4 +49,34 @@ describe('Blog app', function() {
       cy.get('.error').should('have.css', 'border-style', 'solid')
     })
   })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      // log in user here
+      cy.login({ username: user.username, password: user.password })
+    })
+
+    it('A blog can be created', function() {
+      const blog = { title: 'Cypress blog', author: 'cypress', url: 'https://www.cypress.io' }
+
+      // toggle the visibility of the blog from
+      cy.get('#add-blog-button').click()
+
+      // fill the form
+      cy.get('#title').type(blog.title)
+      cy.get('#author').type(blog.author)
+      cy.get('#url').type(blog.url)
+
+      // create the blog
+      cy.get('#create-blog-button').click()
+
+      // assert that the page contains the notification correctly formatted
+      cy.get('.notification').should('contain', `a new blog ${blog.title} by ${blog.author} added`)
+      cy.get('.notification').should('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.get('.notification').should('have.css', 'border-style', 'solid')
+
+      // verify that the blog was added to the list
+      cy.get('.blogs').should('have.length', 1)
+    })
+  })
 })
