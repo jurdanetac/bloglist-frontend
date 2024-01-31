@@ -4,6 +4,8 @@ const user = {
   password: 'cypress'
 }
 
+const blog = { title: 'Cypress blog', author: 'cypress', url: 'https://www.cypress.io' }
+
 describe('Blog app', function() {
   // initialize settings
   beforeEach(function() {
@@ -57,8 +59,6 @@ describe('Blog app', function() {
     })
 
     it('A blog can be created', function() {
-      const blog = { title: 'Cypress blog', author: 'cypress', url: 'https://www.cypress.io' }
-
       // toggle the visibility of the blog from
       cy.get('#add-blog-button').click()
 
@@ -77,6 +77,35 @@ describe('Blog app', function() {
 
       // verify that the blog was added to the list
       cy.get('.blogs').should('have.length', 1)
+    })
+
+    it('A blog can be liked', function() {
+      // create a dummy blog
+      const token = JSON.parse(localStorage.getItem('loggedBlogAppUser')).token
+      // structure the request
+      const options = {
+        method: 'POST',
+        url: 'http://localhost:3003/api/blogs',
+        body: blog,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      // create the blog
+      cy.request(options)
+
+      // refresh the page
+      cy.visit('')
+
+      // expand blog details
+      cy.get('#expandBlogBtn').click()
+
+      // like the blog
+      cy.get('#likeBlogBtn').click()
+
+      // check the likes of the blog was updated
+      cy.get('#likes').should('contain', '1')
     })
   })
 })

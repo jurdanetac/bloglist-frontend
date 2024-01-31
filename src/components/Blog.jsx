@@ -15,7 +15,7 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
     <div style={blogStyle}>
       <div className="blog">
         {blog.title} {blog.author}{' '}
-        <button onClick={() => setVisible(!visible)}>
+        <button id="expandBlogBtn" onClick={() => setVisible(!visible)}>
           {visible ? 'hide' : 'view'}
         </button>
       </div>
@@ -23,9 +23,9 @@ const Blog = ({ blog, handleLike, handleDelete, user }) => {
       {visible ? (
         <div className="togglableContent">
           <div>{blog.url}</div>
-          <div>
+          <div id="likes" >
             likes {blog.likes}{' '}
-            <button onClick={() => handleLike(blog)}>like</button>
+            <button id="likeBlogBtn" onClick={() => handleLike(blog)}>like</button>
           </div>
           <div>{blog.author}</div>
 
