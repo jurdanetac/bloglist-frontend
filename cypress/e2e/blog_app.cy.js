@@ -155,5 +155,36 @@ describe('Blog app', function() {
       // check that the delete button is not showed
       cy.get('#deleteBlogBtn').should('not.exist')
     })
+
+    it('Blogs are sorted by descending likes count', function() {
+      const token = JSON.parse(localStorage.getItem('loggedBlogAppUser')).token
+      // structure the request
+      const options = {
+        method: 'POST',
+        url: 'http://localhost:3003/api/blogs',
+        body:  { ...blog, title: 'The second title with the most likes', likes: 49 },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      const anotherOptions = {
+        method: 'POST',
+        url: 'http://localhost:3003/api/blogs',
+        body:  { ...blog, title: 'The title with the most likes', likes: 50 },
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      cy.request(options)
+      cy.request(anotherOptions)
+
+      // refresh the page
+      cy.visit('')
+
+      cy.get('.blog').eq(0).should('contain', 'The title with the most likes')
+      cy.get('.blog').eq(1).should('contain', 'The second title with the most likes')
+    })
   })
 })
