@@ -58,6 +58,28 @@ describe('Blog app', function() {
       cy.login({ username: user.username, password: user.password })
     })
 
+    const createDummyAndExpand = () => {
+      const token = JSON.parse(localStorage.getItem('loggedBlogAppUser')).token
+      // structure the request
+      const options = {
+        method: 'POST',
+        url: 'http://localhost:3003/api/blogs',
+        body: blog,
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+
+      // create the blog
+      cy.request(options)
+
+      // refresh the page
+      cy.visit('')
+
+      // expand blog details
+      cy.get('#expandBlogBtn').click()
+    }
+
     it('A blog can be created', function() {
       // toggle the visibility of the blog from
       cy.get('#add-blog-button').click()
@@ -80,32 +102,30 @@ describe('Blog app', function() {
     })
 
     it('A blog can be liked', function() {
-      // create a dummy blog
-      const token = JSON.parse(localStorage.getItem('loggedBlogAppUser')).token
-      // structure the request
-      const options = {
-        method: 'POST',
-        url: 'http://localhost:3003/api/blogs',
-        body: blog,
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-
-      // create the blog
-      cy.request(options)
-
-      // refresh the page
-      cy.visit('')
-
-      // expand blog details
-      cy.get('#expandBlogBtn').click()
+      // create a dummy blog and expand it
+      createDummyAndExpand()
 
       // like the blog
       cy.get('#likeBlogBtn').click()
 
       // check the likes of the blog was updated
       cy.get('#likes').should('contain', '1')
+    })
+
+    it('A blog can be deleted', function() {
+      createDummyAndExpand()
+
+      // check that the blog was added to the list
+      cy.get('.blogs').should('contain', blog.title)
+
+      // delete the blog
+      cy.get('#deleteBlogBtn').click()
+
+      // check that the blog was deleted
+      cy.get('.blogs').should('not.contain', blog.title)
+
+      // assert that the page contains the notification correctly formatted
+      cy.get('.notification').should('contain', `blog ${blog.title} by ${blog.author} deleted`)
     })
   })
 })
