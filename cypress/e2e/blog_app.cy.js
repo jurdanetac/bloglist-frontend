@@ -4,6 +4,12 @@ const user = {
   password: 'cypress'
 }
 
+const anotherUser = {
+  name: 'Another',
+  username: 'another',
+  password: 'another'
+}
+
 const blog = { title: 'Cypress blog', author: 'cypress', url: 'https://www.cypress.io' }
 
 describe('Blog app', function() {
@@ -12,8 +18,9 @@ describe('Blog app', function() {
     // reset the database
     cy.request('POST', 'http://localhost:3003/api/testing/reset')
 
-    // create here a user to backend
+    // create here some test users
     cy.request('POST', 'http://localhost:3003/api/users', user)
+    cy.request('POST', 'http://localhost:3003/api/users', anotherUser)
 
     // visit the page
     cy.visit('')
@@ -113,6 +120,7 @@ describe('Blog app', function() {
     })
 
     it('A blog can be deleted', function() {
+      // create a dummy blog and expand it
       createDummyAndExpand()
 
       // check that the blog was added to the list
@@ -126,6 +134,26 @@ describe('Blog app', function() {
 
       // assert that the page contains the notification correctly formatted
       cy.get('.notification').should('contain', `blog ${blog.title} by ${blog.author} deleted`)
+    })
+
+    it('A blog can only be deleted by creator', function() {
+      // create a dummy blog and expand it
+      createDummyAndExpand()
+
+      // check the creator can see the delete button
+      cy.get('#deleteBlogBtn').should('exist')
+
+      // login with another user
+      cy.login({ username: anotherUser.username, password: anotherUser.password })
+
+      // refresh the page
+      cy.visit('')
+
+      // expand blog details
+      cy.get('#expandBlogBtn').click()
+
+      // check that the delete button is not showed
+      cy.get('#deleteBlogBtn').should('not.exist')
     })
   })
 })
