@@ -199,15 +199,14 @@ const App = () => {
       <div className="blogs">
         {blogs
           .map((blog) => (
-            <div className="blog" key={blog.id}>
-              <Blog
-                key={blog.id}
-                blog={blog}
-                handleLike={handleLike}
-                handleDelete={handleDelete}
-                user={user}
-              />
-            </div>
+            <Blog
+              key={blog.id}
+              blog={blog}
+              handleLike={handleLike}
+              handleDelete={handleDelete}
+              user={user}
+              className="blog"
+            />
           ))
           .sort((a, b) => b.props.blog.likes - a.props.blog.likes)}
       </div>
